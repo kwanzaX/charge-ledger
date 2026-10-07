@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: charge-ledger
+  datasource:
+    url: ${PG_URL:jdbc:postgresql://localhost:5432/charge_ledger}
+    username: ${PG_USER:postgres}
+    password: ${PG_PASSWORD:postgres}
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+    producer:
+      acks: all
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    publisher-confirm-type: simple
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+charge-ledger:
+  topic: charging.events
+  exchange: billing
+  retry:
+    interval-ms: 500
+    attempts: 10
+  outbox:
+    poll-ms: 500
+  tariff:
+    currency: EUR
+    price-per-kwh: 0.45
+    idle-fee-per-minute: 0.10
+    idle-grace-minutes: 15
+    vat-rate: 0.23
